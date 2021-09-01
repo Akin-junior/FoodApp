@@ -15,58 +15,101 @@ import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityI
 import categoriesData from '../assets/data/categoriesData';
 import popularData from '../assets/data/popularData';
 import colors from '../assets/colors/colors';
-import { color, round } from 'react-native-reanimated';
 import * as Font from 'expo-font';
+import Animated, {
+  useSharedValue,
+  withTiming,
+  useAnimatedStyle,
+  withRepeat,
+  withSequence,
+  withSpring,
+  Easing,
+} from 'react-native-reanimated';
 
-Feather.loadFont();
-MaterialCommunityIcons.loadFont();
+// Feather.loadFont();
+// MaterialCommunityIcons.loadFont();
 
 
 
 export default Home = ({ navigation }) => {
   const[isLoadFont, setLoadFont] = useState(false)
-
-  async function loadFont() {
+  const[isSelected, setSelected] = useState(null)
+  const progress =useSharedValue(2)
+  const scale = useSharedValue(1)
+  const width = useSharedValue(60)
+  const reanimatedStyle = useAnimatedStyle(()=>{
+    return{
+      width: width.value,
+      height: 60,
+      marginTop: 25,
+      alignSelf: 'center',
+      marginHorizontal: 20,
+      //opacity:progress.value,
+      transform:[
+        { scale:scale.value, },
+        
+       // {rotate:`${progress.value*2*Math.PI}rad`}
+      ],
+    }
+  })
+  async function loadFonts() {
     await Font.loadAsync({
       // Load a font `Montserrat` from a static resource
+    
       MontserratRegular: require('../assets/fonts/Montserrat-Regular.ttf'),
       MontserratBold: require('../assets/fonts/Montserrat-Bold.ttf'),
       MontserratMedium: require('../assets/fonts/Montserrat-Medium.ttf'),
-  
-      // Any string can be used as the fontFamily name. Here we use an object to provide more control
-      'Montserrat-SemiBold': {
-        uri: require('../assets/fonts/Montserrat-SemiBold.ttf'),
-        display: Font.FontDisplay.FALLBACK,
-      },
+      MontserratSemiBold:require('../assets/fonts/Montserrat-SemiBold.ttf'),
+    
+    
+    
+      
     });
+    console.log("yuklendi");
     setLoadFont(true)
-   // this.setState({ fontsLoaded: true });
+   
   }
   useEffect(() => {
-   loadFont()
+    
+   loadFonts()
   }, [])
-  const renderCategoryItem = ({ item }) => {
+  const renderCategoryItem = ({ item,index }) => {
     if (!isLoadFont) {
       return(
         null
       )
     }
     return (
-      <View
+      <TouchableOpacity onPress={()=>{
+
+    
+        setSelected(index+1)
+       
+       
+        
+        console.log();
+        
+       
+        
+      }}>
+      <Animated.View
         style={[
           styles.categoryItemWrapper,
           {
-            backgroundColor: item.selected ? colors.primary : colors.white,
+            backgroundColor:isSelected==item.id ? colors.primary : colors.white,
             marginLeft: item.id == 1 ? 20 : 0,
-          },
+          }
+          
         ]}>
-        <Image source={item.image} style={styles.categoryItemImage} />
+         
+        <Animated.Image source={item.image} style={[styles.categoryItemImage]} />
         <Text style={styles.categoryItemTitle}>{item.title}</Text>
+        
         <View
           style={[
             styles.categorySelectWrapper,
             {
-              backgroundColor: item.selected ? colors.white : colors.secondary,
+              backgroundColor:isSelected==item.id ? colors.white : colors.secondary,
             },
           ]}>
           <Feather
@@ -76,10 +119,15 @@ export default Home = ({ navigation }) => {
             color={item.selected ? colors.black : colors.white}
           />
         </View>
-      </View>
+      </Animated.View>
+      </TouchableOpacity>
     );
   };
-
+  if (!isLoadFont) {
+    return(
+      null
+    )
+  }
   return (
     <View style={styles.container}>
       <ScrollView
@@ -99,7 +147,7 @@ export default Home = ({ navigation }) => {
         {/* Titles */}
         <View style={styles.titlesWrapper}>
           <Text style={styles.titlesSubtitle}>Food</Text>
-          <Text style={styles.titlesTitle}>Delivery</Text>
+          <Animated.Text style={styles.titlesTitle}>Delivery</Animated.Text>
         </View>
 
         {/* Search */}
@@ -112,7 +160,7 @@ export default Home = ({ navigation }) => {
 
         {/* Categories */}
         <View style={styles.categoriesWrapper}>
-          <Text style={styles.categoriesTitle}>Categories</Text>
+          <Animated.Text style={styles.categoriesTitle}>Categories</Animated.Text>
           <View style={styles.categoriesListWrapper}>
             <FlatList
               data={categoriesData}
@@ -231,7 +279,7 @@ const styles = StyleSheet.create({
     borderBottomWidth: 2,
   },
   searchText: {
-    fontFamily: 'Montserrat-Semibold',
+    fontFamily: 'MontserratBold',
     fontSize: 14,
     marginBottom: 5,
     color: colors.textLight,
@@ -243,6 +291,7 @@ const styles = StyleSheet.create({
     fontFamily: 'MontserratBold',
     fontSize: 16,
     paddingHorizontal: 20,
+    color:"black"
   },
   categoriesListWrapper: {
     paddingTop: 15,
@@ -270,7 +319,7 @@ const styles = StyleSheet.create({
   },
   categoryItemTitle: {
     textAlign: 'center',
-    fontFamily: 'Montserrat-Medium',
+    fontFamily: 'MontserratMedium',
     fontSize: 14,
     marginTop: 10,
   },
@@ -290,7 +339,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 20,
   },
   popularTitle: {
-    fontFamily: 'Montserrat-Bold',
+    fontFamily: 'MontserratBold',
     fontSize: 16,
   },
   popularCardWrapper: {
@@ -315,19 +364,19 @@ const styles = StyleSheet.create({
   },
   popularTopText: {
     marginLeft: 10,
-    fontFamily: 'Montserrat-SemiBold',
+    fontFamily: 'MontserratBold',
     fontSize: 14,
   },
   popularTitlesWrapper: {
     marginTop: 20,
   },
   popularTitlesTitle: {
-    fontFamily: 'Montserrat-SemiBold',
+    fontFamily: 'MontserratBold',
     fontSize: 14,
     color: colors.textDark,
   },
   popularTitlesWeight: {
-    fontFamily: 'Montserrat-Medium',
+    fontFamily: 'MontserratMedium',
     fontSize: 12,
     color: colors.textLight,
     marginTop: 5,
@@ -351,7 +400,7 @@ const styles = StyleSheet.create({
     marginLeft: 20,
   },
   rating: {
-    fontFamily: 'Montserrat-SemiBold',
+    fontFamily: 'MontserratBold',
     fontSize: 12,
     color: colors.textDark,
     marginLeft: 5,

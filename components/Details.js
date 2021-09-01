@@ -12,10 +12,59 @@ import {
 import Feather from 'react-native-vector-icons/Feather';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import colors from '../assets/colors/colors';
+import Animated, {
+  useSharedValue,
+  withTiming,
+  useAnimatedStyle,
+  withRepeat,
+  withSequence,
+  withSpring,
+  Easing,
+} from 'react-native-reanimated';
+
 
 export default Details = ({ route, navigation }) => {
   const { item } = route.params;
+  const scale = useSharedValue(1)
+  const marginV = useSharedValue(50)
+  const marginR = useSharedValue(0)
+  const progress =useSharedValue(1)
+  const rotateV =useSharedValue("0deg")
 
+  const reanimatedStyle = useAnimatedStyle(()=>{
+    return{
+    
+      resizeMode: 'contain',
+      marginLeft: marginV.value,
+      marginRight: marginR.value,
+      //opacity:progress.value,
+      transform:[
+        { scale:scale.value, },
+        {rotateZ:rotateV.value},
+        {translateX:progress.value}
+        
+        
+       // {rotate:`${progress.value*2*Math.PI}rad`}
+      ],
+    }
+  })
+  function alertCikar() {
+    alert("Order Received")
+  }
+  function scaleImage(callback) {
+    //rotateV.value =withRepeat(withTiming("90deg"), 4, true)
+    scale.value = withRepeat(withTiming(1.5), 4, true)
+    callback()
+    // scale.value=withSequence(
+    //   withTiming(1.5, { duration: 500 }),
+    //   //withRepeat(withTiming( withSpring(2)), 6, true),
+    //   withTiming(1, { duration: 500 })
+    // );
+    
+   // progress.value =withSpring(-50)
+    
+   
+  }
   const renderIngredientsItem = ({ item }) => {
     return (
       <View
@@ -79,7 +128,7 @@ export default Details = ({ route, navigation }) => {
           </View>
         </View>
         <View>
-          <Image source={item.image} style={styles.itemImage} />
+          <Animated.Image source={item.image} style={reanimatedStyle} />
         </View>
       </View>
 
@@ -98,7 +147,7 @@ export default Details = ({ route, navigation }) => {
       </View>
 
       {/* Place an order */}
-      <TouchableOpacity onPress={() => alert('Your order has been placed!')}>
+      <TouchableOpacity onPress={() =>scaleImage(alertCikar)}>
         <View style={styles.orderWrapper}>
           <Text style={styles.orderText}>Place an order</Text>
           <Feather name="chevron-right" size={18} color={colors.black} />
@@ -169,7 +218,7 @@ const styles = new StyleSheet.create({
     color: colors.textLight,
   },
   infoItemText: {
-    fontFamily: 'Montserrat-SemiBold',
+    fontFamily: 'MontserratSemiBold',
     fontSize: 18,
     color: colors.textDark,
   },
