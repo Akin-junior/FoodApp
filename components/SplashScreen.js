@@ -54,7 +54,7 @@ function renderHeader() {
                      delay={300}
                         style={{ width: "80%", color: COLORS.white, fontSize: 40, fontWeight: "bold", lineHeight: 45 }}
                     >
-                        Delicious Foods Your Taste
+                        Delicious Foods For Special People
                     </Animatable.Text>
                 </LinearGradient>
 
@@ -72,7 +72,7 @@ function renderDetails(navigation) {
             delay={600}
             style={{ flex: 1, paddingHorizontal: SIZES.padding }}>
             <Text style={{ marginTop: SIZES.radius, color: COLORS.gray, width: "70%", fontSize: 13 }}>
-                Discover delicious foods and order more than 100 food! All foods ready for your taste
+                Discover delicious foods and order more than 100 food! All foods are prepared to your taste.
             </Text>
             <View
                 style={{ flex: 1, justifyContent: "center" }}>
@@ -100,6 +100,7 @@ function renderDetails(navigation) {
 
 
                 />
+                <Text style={{ marginTop: SIZES.radius, color: COLORS.gray, width: "70%", fontSize: 13, paddingVertical:SIZES.padding}}>-Created by Akın Keskinbaş.</Text>
             </View>
         </Animatable.View>
     )
