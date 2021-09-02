@@ -21,7 +21,7 @@ const CustomButton=({buttonText,buttonContainerStyle,colors,onPress})=>{
                 textAlign:"center",
                 color:COLORS.white,
                 fontSize:22,
-                fontWeight:"bold"
+                fontFamily:"MontserratBold"
                 
             }}>
                 {buttonText}
@@ -41,7 +41,7 @@ const CustomButton=({buttonText,buttonContainerStyle,colors,onPress})=>{
                 textAlign:"center",
                 color:"white",
                 fontSize:22,
-                fontWeight:"bold"
+                fontFamily:"MontserratBold"
                 
             }}>
                 {buttonText}

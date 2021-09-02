@@ -1,7 +1,7 @@
 import { LinearGradient } from 'expo-linear-gradient';
 import React, { Component } from 'react'
-import { Text, View, StyleSheet, ImageBackground } from 'react-native'
-
+import { Text, View, StyleSheet, ImageBackground, ActivityIndicator } from 'react-native'
+import * as Font from 'expo-font';
 import * as Animatable from 'react-native-animatable';
 import { COLORS, SIZES } from "../assets/colors/splashColors"
 import CustomButton from './CustomButton';
@@ -32,6 +32,21 @@ const zoomIn2 = {
 
 
 };
+async function loadFonts() {
+    await Font.loadAsync({
+      // Load a font `Montserrat` from a static resource
+    
+      MontserratRegular: require('../assets/fonts/Montserrat-Regular.ttf'),
+      MontserratBold: require('../assets/fonts/Montserrat-Bold.ttf'),
+      MontserratMedium: require('../assets/fonts/Montserrat-Medium.ttf'),
+      MontserratSemiBold:require('../assets/fonts/Montserrat-SemiBold.ttf'),
+    
+    
+    
+      
+    });
+
+}
 
 function renderHeader() {
     return (
@@ -52,7 +67,7 @@ function renderHeader() {
                      animation={zoomIn2}
                      duration={900}
                      delay={300}
-                        style={{ width: "80%", color: COLORS.white, fontSize: 40, fontWeight: "bold", lineHeight: 45 }}
+                        style={{ width: "80%", color: COLORS.white,paddingBottom:35, fontSize: 40,fontFamily:"MontserratBold", lineHeight: 45 }}
                     >
                         Delicious Foods For Special People
                     </Animatable.Text>
@@ -71,7 +86,7 @@ function renderDetails(navigation) {
             duration={900}
             delay={600}
             style={{ flex: 1, paddingHorizontal: SIZES.padding }}>
-            <Text style={{ marginTop: SIZES.radius, color: COLORS.gray, width: "70%", fontSize: 13 }}>
+            <Text style={{  marginBottom:55, color: COLORS.gray, width: "70%", fontSize: 13,fontFamily:"MontserratBold" }}>
                 Discover delicious foods and order more than 100 food! All foods are prepared to your taste.
             </Text>
             <View
@@ -100,7 +115,7 @@ function renderDetails(navigation) {
 
 
                 />
-                <Text style={{ marginTop: SIZES.radius, color: COLORS.gray, width: "70%", fontSize: 13, paddingVertical:SIZES.padding}}>-Created by Akın Keskinbaş.</Text>
+                <Text style={{ marginTop: SIZES.radius, marginBottom:35, color: COLORS.gray, width: "70%", fontSize: 13,fontFamily:"MontserratRegular", paddingVertical:SIZES.padding}}>-Created by Akın Keskinbaş.</Text>
             </View>
         </Animatable.View>
     )
@@ -110,23 +125,39 @@ function renderDetails(navigation) {
 export class SplashScreen extends Component {
     constructor(props) {
         super(props)
-
+        this.state=({
+            isFontLoad:false
+        })
 
 
     }
 
-    componentDidMount() {
-
+  async  componentDidMount() {
+        await loadFonts()
+        this.setState({
+            isFontLoad:true
+        })
     }
 
 
     render() {
-        return (
-            <View style={styles.mainContainer}>
-                {renderHeader()}
-                {renderDetails(this.props.navigation)}
-            </View>
-        )
+        if (!this.state.isFontLoad) {
+            return(
+                <View style={{flex:1}}>
+                <ActivityIndicator style={{color:COLORS.black}}>
+
+                </ActivityIndicator>
+                </View>
+            )
+        }else{
+            return (
+                <View style={styles.mainContainer}>
+                    {renderHeader()}
+                    {renderDetails(this.props.navigation)}
+                </View>
+            )
+        }
+        
     }
 }
 
